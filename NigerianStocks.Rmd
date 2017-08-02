@@ -1,0 +1,166 @@
+---
+title: "Listed Nigerian Stocks"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    runtime: shiny
+    theme: simplex
+    source_code: embed
+    social:  ["linkedin", "twitter"]
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(flexdashboard)
+library(quantmod)
+library(magrittr)
+library(dplyr)
+library(xts)
+library(readr)
+library(quantmod)
+library(tidyr)
+library(readxl)
+library(DT)
+library(RColorBrewer)
+```
+#[Nosa's Arena](http://www.nosa2k.netlify.com)
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+This  Dashboard is a Proof of concept of Shiny's reactivity. It was created in an RMarkdown file, using R's Flexdashboard.
+
+```{r}
+radioButtons("Stocks", label = h5("LISTED NIGERIAN STOCKS"), 
+    choices = list(ACCESSBANK="ACCESSBANK", ASHAKA= "ASHAKA",BERGER = "BERGER", CADBURY = "CADBURY",CONOIL="CONOIL" , DANGOTECEMENT = "DANGOTECEMENT", DANGOTEFLOUR = "DANGOTEFLOUR", DANGOTESUGAR = "DANGOTESUGAR",DIAMONDBANK = "DIAMONDBANK",FCMB="FCMB",FLOURMILLS="FLOURMILLS",GSK="GSK",GUINESS="GUINESS", LEVENTIS="LEVENTIS",MAYBAKER="MAYBAKER",MOBIL="MOBIL"), 
+    selected = "ACCESSBANK")
+```
+
+
+
+```{r}
+ dateRangeInput("dates", label = h5("SELECT A DATE RANGE"), start = "2007-01-04", end = "2017-07-17")
+```
+
+DATA SOURCE: [AFRICAN MARKETS](https://www.african-markets.com/en/)
+
+
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+
+```{r}
+
+ACCESSBANK <- read_excel("~/RWorking Directory/NSE/ACCESSBANK.xlsx")
+ACCESSBANK<-drop_na(ACCESSBANK)
+ACCESSBANK<-xts(ACCESSBANK[,-1],order.by = as.Date(ACCESSBANK$X__1))
+
+BERGER <- read_excel("~/RWorking Directory/NSE/BERGER.xlsx")
+BERGER<-drop_na(BERGER)
+BERGER<-xts(BERGER[,-1],order.by = as.Date(BERGER$X__1))
+
+CADBURY<- read_excel("~/RWorking Directory/NSE/CADBURY.xlsx")
+CADBURY<-drop_na(CADBURY)
+CADBURY<-xts(CADBURY[,-1],order.by = as.Date(CADBURY$X__1))
+
+
+CONOIL <- read_excel("~/RWorking Directory/NSE/CONOIL.xlsx")
+CONOIL<-drop_na(CONOIL)
+CONOIL<-xts(CONOIL[,-1],order.by = as.Date(CONOIL$X__1))
+
+DANGOTECEMENT <- read_excel("~/RWorking Directory/NSE/DANGOTECEMENT.xlsx")
+DANGOTECEMENT<-drop_na(DANGOTECEMENT)
+DANGOTECEMENT<-xts(DANGOTECEMENT[,-1],order.by = as.Date(DANGOTECEMENT$X__1))
+
+DANGOTEFLOUR <- read_excel("~/RWorking Directory/NSE/DANGOTEFLOUR.xlsx")
+DANGOTEFLOUR<-drop_na(DANGOTEFLOUR)
+DANGOTEFLOUR<-xts(DANGOTEFLOUR[,-1],order.by = as.Date(DANGOTEFLOUR$X__1))
+
+DANGOTESUGAR<- read_excel("~/RWorking Directory/NSE/DANGOTESUGAR.xlsx")
+DANGOTESUGAR<-drop_na(DANGOTESUGAR)
+DANGOTESUGAR<-xts(DANGOTESUGAR[,-1],order.by = as.Date(DANGOTESUGAR$X__1))
+
+
+DIAMONDBANK<- read_excel("~/RWorking Directory/NSE/DIAMONDBANK.xlsx")
+DIAMONDBANK<-drop_na(DIAMONDBANK)
+DIAMONDBANK<-xts(DIAMONDBANK[,-1],order.by = as.Date(DIAMONDBANK$X__1))
+
+FCMB <- read_excel("~/RWorking Directory/NSE/FCMB.xlsx")
+FCMB<-drop_na(FCMB)
+FCMB<-xts(FCMB[,-1],order.by = as.Date(FCMB$X__1))
+
+
+FLOURMILLS <- read_excel("~/RWorking Directory/NSE/FLOURMILLS.xlsx")
+FLOURMILLS<-drop_na(FLOURMILLS)
+FLOURMILLS<-xts(FLOURMILLS[,-1],order.by = as.Date(FLOURMILLS$X__1))
+
+
+GSK <- read_excel("~/RWorking Directory/NSE/GSK.xlsx")
+GSK<-drop_na(GSK)
+GSK<-xts(GSK[,-1],order.by = as.Date(GSK$X__1))
+
+
+LEVENTIS <- read_excel("~/RWorking Directory/NSE/LEVENTIS.xlsx")
+LEVENTIS<-drop_na(LEVENTIS)
+LEVENTIS<-xts(LEVENTIS[,-1],order.by = as.Date(LEVENTIS$X__1))
+
+
+MAYBAKER <- read_excel("~/RWorking Directory/NSE/MAYBAKER.xlsx")
+MAYBAKER<-drop_na(MAYBAKER)
+MAYBAKER<-xts(MAYBAKER[,-1],order.by = as.Date(MAYBAKER$X__1))
+
+
+MOBIL <- read_excel("~/RWorking Directory/NSE/MOBIL.xlsx")
+MOBIL<-drop_na(MOBIL)
+MOBIL<-xts(MOBIL[,-1],order.by = as.Date(MOBIL$X__1))
+
+
+ASHAKA <- read_excel("~/RWorking Directory/NSE/ASHAKA.xlsx")
+ASHAKA<-drop_na(ASHAKA)
+ASHAKA<-xts(ASHAKA[,-1],order.by = as.Date(ASHAKA$X__1))
+
+
+GUINESS <- read_excel("~/RWorking Directory/NSE/GUINESS.xlsx")
+GUINESS<-drop_na(GUINESS)
+GUINESS<-xts(GUINESS[,-1],order.by = as.Date(GUINESS$X__1))
+
+
+NaijaStocks<-reactive({  
+      switch(input$Stocks,
+                   ACCESSBANK = ACCESSBANK,
+                   ASHAKA = ASHAKA,
+                   BERGER = BERGER,
+                   CADBURY = CADBURY,
+                   CONOIL = CONOIL,
+                   DANGOTECEMENT = DANGOTECEMENT,
+                   DANGOTEFLOUR = DANGOTEFLOUR,
+                   DANGOTESUGAR = DANGOTESUGAR,
+                   DIAMONDBANK = DIAMONDBANK,
+                   FCMB = FCMB,
+                   FLOURMILLS = FLOURMILLS,
+                   GSK = GSK,
+                   GUINESS = GUINESS,
+                   LEVENTIS = LEVENTIS,
+                   MAYBAKER = MAYBAKER,
+                   ACCESSBANK)
+  
+  
+})
+
+```
+
+### Stock Price for the day
+
+```{r}
+
+
+
+
+renderPlot({
+  lineChart(NaijaStocks(),line.type='h',TA=NULL,  start= input$dates[1],to =input$dates[2]) 
+   
+})
+```
+
+
